@@ -29,11 +29,19 @@ kubectl -n istio-system delete issuer letsencrypt-prod
 echo "delete STG issuer "
 kubectl -n istio-system delete issuer letsencrypt-staging
 
+echo "delete dns service account binding"
+gcloud alpha iam service-accounts remove-iam-policy-binding $SA_DNS \
+  --member=$SA_DNS \
+  --role=roles/dns.admin
+
 echo "delete dns service account"
 gcloud iam service-accounts delete $SA_DNS --quiet 
 
+echo "delete created resources by cert-manager on istio-system namespace"
 kubectl -n istio-system delete secret cert-manager-credentials
-
+kubectl -n istio-system delete secret istio-ingressgateway-certs
 kubectl -n istio-system delete gateway public-gateway
 
+echo "delete gcp dnsadmin json file"
 rm -f gcp-dnsadmin.json
+
