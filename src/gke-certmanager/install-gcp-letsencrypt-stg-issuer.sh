@@ -10,14 +10,14 @@ kubectl apply -f - <<EOF
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Issuer
 metadata:
-  name: letsencrypt-prod
+  name: letsencrypt-staging
   namespace: istio-system
 spec:
   acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
     email: ${OWNER_EMAIL}
     privateKeySecretRef:
-      name: letsencrypt-prod
+      name: letsencrypt-staging
     dns01:
       providers:
       - name: cloud-dns
