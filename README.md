@@ -80,3 +80,9 @@ spec:
           number: 9898
 EOF
 ```
+## Destroy resources
+
+```
+cd src
+./destroy.sh
+```
