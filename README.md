@@ -80,9 +80,61 @@ spec:
           number: 9898
 EOF
 ```
+
 ## Destroy resources
 
 ```
 cd src
 ./destroy.sh
+```
+
+## Debug Cert-Manager
+
+You can use the following commands to debug your instalation:
+
+```
+kubectl get pods -n cert-manager
+```
+
+Output:
+
+```
+NAME                                       READY   STATUS    RESTARTS   AGE
+cert-manager-5d67c788fd-hs94s              1/1     Running   0          11m
+cert-manager-cainjector-57988f84f7-gxgdg   1/1     Running   0          11m
+cert-manager-webhook-54b5f85648-p6bsf      1/1     Running   1          11m
+```
+
+Get cert-manager pod logs with:
+
+```
+kubectl -n cert-manager logs -f cert-manager-5d67c788fd-hs94s
+```
+
+Output:
+
+```
+I0930 16:25:35.279074       1 sync.go:331] cert-manager/controller/certificates/certificates "level"=0 "msg"="certificate scheduled for renewal" "duration_until_renewal"="1438h59m58.720970602s" "related_resource_kind"="Secret" "related_resource_name"="istio-ingressgateway-certs" "related_resource_namespace"="istio-system"
+I0930 16:25:35.279674       1 controller.go:135] cert-manager/controller/certificates "level"=0 "msg"="finished processing work item" "key"="istio-system/istio-gateway"
+I0930 16:25:39.868581       1 controller.go:135] cert-manager/controller/challenges "level"=0 "msg"="finished processing work item" "key"="istio-system/istio-gateway-31742858-0"
+I0930 16:25:39.868636       1 controller.go:129] cert-manager/controller/challenges "level"=0 "msg"="syncing item" "key"="istio-system/istio-gateway-31742858-0"
+I0930 16:25:40.137989       1 controller.go:129] cert-manager/controller/orders "level"=0 "msg"="syncing item" "key"="istio-system/istio-gateway-31742858"
+I0930 16:25:40.138695       1 controller.go:135] cert-manager/controller/challenges "level"=0 "msg"="finished processing work item" "key"="istio-system/istio-gateway-31742858-0"
+I0930 16:25:40.138867       1 controller.go:129] cert-manager/controller/challenges "level"=0 "msg"="syncing item" "key"="istio-system/istio-gateway-31742858-0"
+E0930 16:25:40.138975       1 controller.go:192] cert-manager/controller/challenges "msg"="challenge in work queue no longer exists" "error"="challenge.certmanager.k8s.io \"istio-gateway-31742858-0\" not found"
+I0930 16:25:40.139068       1 controller.go:135] cert-manager/controller/challenges "level"=0 "msg"="finished processing work item" "key"="istio-system/istio-gateway-31742858-0"
+I0930 16:25:40.139654       1 controller.go:135] cert-manager/controller/orders "level"=0 "msg"="finished processing work item" "key"="istio-system/istio-gateway-31742858"
+```
+
+Get certificate status with:
+
+```
+kubectl get certificates -n istio-system
+```
+
+Output:
+
+```
+NAME            READY   SECRET                       AGE
+istio-gateway   True    istio-ingressgateway-certs   15m
 ```
