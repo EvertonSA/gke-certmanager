@@ -30,9 +30,9 @@ echo "delete STG issuer "
 kubectl -n istio-system delete issuer letsencrypt-staging
 
 echo "delete dns service account binding"
-gcloud alpha iam service-accounts remove-iam-policy-binding $SA_DNS \
-  --member=$SA_DNS \
-  --role=roles/dns.admin
+gcloud projects remove-iam-policy-binding  ${SA_DNS} \
+  --member="serviceAccount:$SA_DNS" \
+  --role=roles/editor
 
 echo "delete dns service account"
 gcloud iam service-accounts delete $SA_DNS --quiet 
